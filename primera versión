@@ -1,0 +1,158 @@
+/*Version 1*/
+
+#include "simpletools.h"                      // Include simpletools header
+#include "abdrive.h"                          // Include abdrive header
+#include "ping.h"
+
+#include<stdio.h>
+#include<stdlib.h>
+/* Stack has three properties. capacity stands for the maximum number of elements stack can hold.
+   Size stands for the current size of the stack and elements is the array of elements */
+typedef struct Stack
+{
+        int capacity;
+        int size;
+        int *elements;
+}Stack;
+/* crateStack function takes argument the maximum number of elements the stack can hold, creates
+   a stack according to it and returns a pointer to the stack. */
+Stack * createStack(int maxElements)
+{
+        /* Create a Stack */
+        Stack *S;
+        S = (Stack *)malloc(sizeof(Stack));
+        /* Initialise its properties */
+        S->elements = (int *)malloc(sizeof(int)*maxElements);
+        S->size = 0;
+        S->capacity = maxElements;
+        /* Return the pointer */
+        return S;
+}
+void pop(Stack *S)
+{
+        /* If stack size is zero then it is empty. So we cannot pop */
+        if(S->size==0)
+        {
+                printf("Stack is Empty\n");
+                return;
+        }
+        /* Removing an element is equivalent to reducing its size by one */
+        else
+        {
+                S->size--;
+        }
+        return;
+}
+int top(Stack *S)
+{
+        if(S->size==0)
+        {
+                printf("Stack is Empty\n");
+                exit(0);
+        }
+        /* Return the topmost element */
+        return S->elements[S->size-1];
+}
+void push(Stack *S,int element)
+{
+        /* If the stack is full, we cannot push an element into it as there is no space for it.*/
+        if(S->size == S->capacity)
+        {
+                printf("Stack is Full\n");
+        }
+        else
+        {
+                /* Push an element on the top of it and increase its size by one*/ 
+                S->elements[S->size++] = element;
+        }
+        return;
+}
+
+void izquierda2(){
+    drive_goto(-25,26);
+  }
+void derecha2(){
+    drive_goto(26,-25);
+  }
+void atras(){
+    drive_goto(52,-50);
+  }
+int izquierda(int x, int y, int di){
+  int i = 0;
+  drive_goto(-25,26);
+  pause(10);
+  if(ping_cm(8)>15){
+      i = 1;
+    }
+  return i;
+  }
+  
+int derecha(int x, int y, int di){
+  int i = 0;
+  drive_goto(52,-50);
+  pause(10);
+  if(ping_cm(8)>15){
+      i = 1;
+    }
+  pause(10);
+  drive_goto(-25,26);
+  return i;
+  }  
+
+int adelante(int x, int y, int di){
+  int i = 0;
+  if(ping_cm(8)>10){
+      i = 1;
+    }
+  return i;
+  }
+
+void paso(){
+  int paso = 0;
+  while(paso<40){
+    paso = paso + 5;
+    drive_goto(5,5);
+    if(ping_cm(8)<7){
+      break;
+      }
+   }      
+  }
+
+int main()                                    // Main function
+{
+  int x = 0;
+  int y = 0;
+  int dic = 0;
+  int izq = 0;
+  int dec = 0;
+  int ade = 0;
+
+  
+  Stack *stx = createStack(20); //crea un stack de tamaño 10
+  Stack *sty = createStack(20);
+  Stack *sttx = createStack(150);
+  Stack *stty = createStack(150);
+  while(1){
+   
+    izq = izquierda(x, y, dic);
+    dec = derecha(x,y,dic);
+    ade = adelante(x,y,dic);
+    
+    if(ade==1){
+      paso();
+      }
+    else if(dec==1){
+      derecha2();
+      paso();
+      }
+    else if(izq==1){
+      izquierda2();
+      paso();
+      }
+    else{
+      atras();
+      paso();
+      }  
+  }   
+}
+
